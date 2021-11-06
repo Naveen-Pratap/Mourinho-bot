@@ -19,20 +19,27 @@ class CredentialsNotConfiguredError(Exception):
 
 
 def run():
-    logger.debug("Using config: [{}]".format(constants.bot_name))
     try:
-        reddit = praw.Reddit(
-            client_id=os.environ["praw_client_id"],
-            client_secret=os.environ["praw_client_secret"],
-            username=os.environ["praw_username"],
-            password=os.environ["praw_password"],
-            user_agent="Mourinho Bot 0.1"
-        )
+        username = os.environ["praw_username"]
+        password = os.environ["praw_password"]
+        client_id = os.environ["praw_client_id"]
+        client_secret = os.environ["praw_client_secret"]
+
     except KeyError:
         print("Please configure your client id and secret as environment variables in the following format:")
-        print("praw_client_id=<client_id>\npraw_client_secret=<client_secret>")
+        print(
+            "praw_client_id=<client_id>\npraw_client_secret=<client_secret>\npraw_username=<username>\npraw_password=<password>")
         logger.error("Failed connecting to Reddit")
         raise CredentialsNotConfiguredError("Failed connecting to Reddit")
+
+    logger.debug("Using user u/{}".format(username))
+    reddit = praw.Reddit(
+        client_id=client_id,
+        client_secret=client_secret,
+        username=username,
+        password=password,
+        user_agent="Mourinho Bot 0.1"
+    )
 
     logger.debug("Using subreddit: [{}]".format(constants.subreddit))
     subreddit = reddit.subreddit(constants.subreddit)
@@ -44,6 +51,6 @@ def run():
             reply = get_random_quote()
 
             comment.reply(reply)
-            logger.info("Replied to comment [{}]".format(comment.id))
+            logger.info("Replied to comment [{}] by u/{}".format(comment.id, comment.author.name))
             # reddit APIs allow 1 request for every 2 seconds
             time.sleep(3)

@@ -1,8 +1,10 @@
 import logging
+import sys
 from mourinho_bot.bot import run
 
+logging.basicConfig(format='%(levelname)s - %(message)s')
 logger = logging.getLogger("app")
-logger.setLevel(logging.INFO)
+logger.setLevel(logging.DEBUG)
 
 if __name__ == "__main__":
     print("Running bot.. Press Ctrl+c to exit")
@@ -10,3 +12,4 @@ if __name__ == "__main__":
         run()
     except KeyboardInterrupt:
         print("Stopping bot and terminating..")
+        sys.exit()
