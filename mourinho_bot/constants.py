@@ -3,7 +3,10 @@ Constants used for this package
 """
 
 # subreddit used
-subreddit = "soccer"
+SUBREDDIT = "soccer"
 
 # keyword matched
-keyword = "mourinho"
+KEYWORD = "mourinho"
+
+# User agent to be used while connecting to reddit
+USER_AGENT = "Mourinho Bot 0.1"

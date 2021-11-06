@@ -1,9 +1,12 @@
+"""
+Functions used by the bot
+"""
 import os
-
-import praw
 import re
 import time
 import logging
+import praw
+
 
 import mourinho_bot.constants as constants
 from mourinho_bot.utils import get_random_quote
@@ -19,6 +22,11 @@ class CredentialsNotConfiguredError(Exception):
 
 
 def run():
+    """
+    Runs the bot and continuously streams comments from Reddit
+
+    Uses configured environment variables to find credentials.
+    """
     try:
         username = os.environ["praw_username"]
         password = os.environ["praw_password"]
@@ -26,9 +34,15 @@ def run():
         client_secret = os.environ["praw_client_secret"]
 
     except KeyError:
-        print("Please configure your client id and secret as environment variables in the following format:")
         print(
-            "praw_client_id=<client_id>\npraw_client_secret=<client_secret>\npraw_username=<username>\npraw_password=<password>")
+            "Please configure your client id and secret as environment variables in the following "
+            "format:"
+        )
+        print(
+            "praw_client_id=<client_id>\npraw_client_secret=<client_secret>\npraw_username"
+            "=<username>\npraw_password"
+            "=<password>"
+        )
         logger.error("Failed connecting to Reddit")
         raise CredentialsNotConfiguredError("Failed connecting to Reddit")
 
@@ -38,16 +52,16 @@ def run():
         client_secret=client_secret,
         username=username,
         password=password,
-        user_agent="Mourinho Bot 0.1"
+        user_agent=constants.USER_AGENT
     )
 
-    logger.debug("Using subreddit: [{}]".format(constants.subreddit))
-    subreddit = reddit.subreddit(constants.subreddit)
+    logger.debug("Using subreddit: [{}]".format(constants.SUBREDDIT))
+    subreddit = reddit.subreddit(constants.SUBREDDIT)
 
     logger.info("Starting stream")
     # continuously streams comments and posts until manually broken
     for comment in subreddit.stream.comments():
-        if re.search(constants.keyword, comment.body, re.IGNORECASE):
+        if re.search(constants.KEYWORD, comment.body, re.IGNORECASE):
             reply = get_random_quote()
 
             comment.reply(reply)
