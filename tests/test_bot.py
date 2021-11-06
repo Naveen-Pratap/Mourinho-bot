@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from mourinho_bot.utils import get_random_quote
+from mourinho_bot.bot import get_random_quote
 
 
 class TestGetRandom(TestCase):

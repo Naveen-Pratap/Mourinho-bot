@@ -2,14 +2,13 @@
 Functions used by the bot
 """
 import os
+import random
 import re
 import time
 import logging
 import praw
 
-
 import mourinho_bot.constants as constants
-from mourinho_bot.utils import get_random_quote
 
 logger = logging.getLogger("app")
 
@@ -62,9 +61,36 @@ def run():
     # continuously streams comments and posts until manually broken
     for comment in subreddit.stream.comments():
         if re.search(constants.KEYWORD, comment.body, re.IGNORECASE):
-            reply = get_random_quote()
+            quotes = get_quotes()
+            reply = get_random_quote(quotes)
 
             comment.reply(reply)
             logger.info("Replied to comment [{}] by u/{}".format(comment.id, comment.author.name))
             # reddit APIs allow 1 request for every 2 seconds
             time.sleep(3)
+
+
+def get_quotes() -> list:
+    """
+    Fetches quotes from quotes.txt
+    :return: List of quotes
+    """
+    with open("../quotes.txt", "r") as file:
+        quotes = file.readlines()
+
+    # Remove empty spaces from quotes
+    quotes = [q for q in quotes if q]
+    return quotes
+
+
+def get_random_quote(
+        quotes: list = []
+) -> str:
+    """
+    :rtype: str
+    :param
+        quotes: list of quotes from which a random quote is to be selected
+    :return:
+        A randomly selected quote
+    """
+    return random.choice(quotes)

@@ -6,7 +6,7 @@ Constants used for this package
 SUBREDDIT = "soccer"
 
 # keyword matched
-KEYWORD = "mourinho"
+KEYWORD = "u/mourinho-bot"
 
 # User agent to be used while connecting to reddit
 USER_AGENT = "Mourinho Bot 0.1"
