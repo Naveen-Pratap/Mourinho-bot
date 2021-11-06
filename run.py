@@ -4,7 +4,7 @@ Entry script to start the bot
 
 import logging
 import sys
-from mourinho_bot.bot import run
+from reddit_bot.bot import run
 
 # set logging config here
 logging.basicConfig(format='%(levelname)s - %(message)s')

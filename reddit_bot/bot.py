@@ -8,7 +8,7 @@ import time
 import logging
 import praw
 
-import mourinho_bot.constants as constants
+import reddit_bot.constants as constants
 
 logger = logging.getLogger("app")
 
@@ -45,7 +45,7 @@ def run():
         logger.error("Failed connecting to Reddit")
         raise CredentialsNotConfiguredError("Failed connecting to Reddit")
 
-    logger.debug("Using user u/{}".format(username))
+    logger.info("Using user u/{}".format(username))
     reddit = praw.Reddit(
         client_id=client_id,
         client_secret=client_secret,
@@ -54,14 +54,16 @@ def run():
         user_agent=constants.USER_AGENT
     )
 
-    logger.debug("Using subreddit: [{}]".format(constants.SUBREDDIT))
+    logger.info("Using subreddit: [{}]".format(constants.SUBREDDIT))
     subreddit = reddit.subreddit(constants.SUBREDDIT)
+
+    logger.info("Loading quotes..")
+    quotes = get_quotes()
 
     logger.info("Starting stream")
     # continuously streams comments and posts until manually broken
     for comment in subreddit.stream.comments():
         if re.search(constants.KEYWORD, comment.body, re.IGNORECASE):
-            quotes = get_quotes()
             reply = get_random_quote(quotes)
 
             comment.reply(reply)
@@ -75,7 +77,7 @@ def get_quotes() -> list:
     Fetches quotes from quotes.txt
     :return: List of quotes
     """
-    with open("../quotes.txt", "r") as file:
+    with open("quotes.txt", "r") as file:
         quotes = file.readlines()
 
     # Remove empty spaces from quotes
